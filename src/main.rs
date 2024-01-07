@@ -1,11 +1,46 @@
+use argh::FromArgs;
 use std::f64::consts::PI;
+use std::path::{Path, PathBuf};
+use svg::node::element::Circle;
+use svg::Document;
 
 type Point = (f64, f64);
 type Points = Vec<Point>;
 
+#[derive(FromArgs)]
+/// Distribute points in a circle
+struct Args {
+    /// number of points
+    #[argh(positional)]
+    n: usize,
+    /// boundary evenness
+    #[argh(option, short = 'a', default = "0.0")]
+    alpha: f64,
+    /// output file path
+    #[argh(option, short = 'o')]
+    output: PathBuf,
+}
+
 fn main() {
-    let pts = sunflower(10, 0.0);
-    dbg!(pts);
+    let args: Args = argh::from_env();
+    let pts = sunflower(args.n, args.alpha);
+    write_to_svg(&args.output, &pts, 100.0);
+}
+
+fn write_to_svg(outpath: &Path, pts: &Points, radius: f64) {
+    let mut document = Document::new().set(
+        "viewBox",
+        (-0.1 * radius, -0.1 * radius, 2.3 * radius, 2.3 * radius),
+    );
+    for (x, y) in pts {
+        let dot = Circle::new()
+            .set("cx", *x * radius + radius)
+            .set("cy", *y * radius + radius)
+            .set("r", 1.0);
+
+        document = document.add(dot);
+    }
+    svg::save(outpath, &document).unwrap();
 }
 
 fn sunflower(n: usize, alpha: f64) -> Points {
