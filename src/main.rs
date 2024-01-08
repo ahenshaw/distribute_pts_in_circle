@@ -13,12 +13,12 @@ struct Args {
     /// number of points
     #[argh(positional)]
     n: usize,
+    /// output file path
+    #[argh(positional)]
+    output: PathBuf,
     /// boundary evenness
     #[argh(option, short = 'a', default = "0.0")]
     alpha: f64,
-    /// output file path
-    #[argh(option, short = 'o')]
-    output: PathBuf,
     /// dot size
     #[argh(option, short = 'd', default = "5.0")]
     dotsize: f64,
