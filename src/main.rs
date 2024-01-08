@@ -19,27 +19,34 @@ struct Args {
     /// output file path
     #[argh(option, short = 'o')]
     output: PathBuf,
+    /// dot size
+    #[argh(option, short = 'd', default = "5.0")]
+    dotsize: f64,
 }
 
 fn main() {
     let args: Args = argh::from_env();
     let pts = sunflower(args.n, args.alpha);
-    write_to_svg(&args.output, &pts, 100.0);
+    write_to_svg(&args.output, &pts, args.dotsize);
 }
 
-fn write_to_svg(outpath: &Path, pts: &Points, radius: f64) {
-    let mut document = Document::new().set(
-        "viewBox",
-        (-0.1 * radius, -0.1 * radius, 2.3 * radius, 2.3 * radius),
-    );
+fn write_to_svg(outpath: &Path, pts: &Points, dotsize: f64) {
+    let mut document = Document::new().set("viewBox", (-1010, -1010, 2020, 2020));
     for (x, y) in pts {
         let dot = Circle::new()
-            .set("cx", *x * radius + radius)
-            .set("cy", *y * radius + radius)
-            .set("r", 1.0);
+            .set("cx", *x * 1000.0)
+            .set("cy", *y * 1000.0)
+            .set("r", dotsize);
 
         document = document.add(dot);
     }
+    document = document.add(
+        Circle::new()
+            .set("r", 1000)
+            .set("fill", "none")
+            .set("stroke", "black")
+            .set("stroke-width", "2"),
+    );
     svg::save(outpath, &document).unwrap();
 }
 
