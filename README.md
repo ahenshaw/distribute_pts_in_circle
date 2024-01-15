@@ -1,8 +1,9 @@
 # distribute_pts_in_circle
-Evenly distribute points in a circle (Rust)
+Evenly distribute points in a circle
 
-This code is a port of the python code from here:
+This code is a Rust port (with additional features) of the Python code from here:
 https://stackoverflow.com/questions/28567166/uniformly-distribute-x-points-inside-a-circle
+This code builds a command-line application that allows for the generation of PDF or SVG output images.
 
 ![Alt text](./sample.svg)
 
